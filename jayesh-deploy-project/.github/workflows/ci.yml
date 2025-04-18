@@ -2,9 +2,11 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
-    branches: [main]
+    branches:
+      - main
 
 jobs:
   deploy:
@@ -27,12 +29,8 @@ jobs:
       - name: 🐳 Build Docker image
         run: docker build -t jayesh-fastapi-app .
 
-      - name: 🚀 Push Docker image (optional if using DockerHub)
-        run: echo "You can add docker push here if configured"
-
       - name: 🧪 Run tests
-        run: |
-          echo "Insert test commands here if needed"
+        run: echo "Test script goes here"
 
 
 
