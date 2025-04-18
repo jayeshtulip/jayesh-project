@@ -1,35 +1,49 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 import joblib
-import numpy as np
 import os
 
-# ✅ Load model
-import os
-
-current_dir = os.path.dirname(__file__)
-model_path = os.path.join(current_dir, "model", "model.pkl")
-
-model = joblib.load(model_path)
-
-# ✅ Define app
 app = FastAPI()
 
-# ✅ Input schema
+# Define input schema
 class IrisFeatures(BaseModel):
-    feature1: float
-    feature2: float
-    feature3: float
-    feature4: float
+    sepal_length: float
+    sepal_width: float
+    petal_length: float
+    petal_width: float
 
-# ✅ Root route
+# Load model
+model_path = os.path.join(os.path.dirname(__file__), "model", "model.pkl")
+model = joblib.load(model_path)
+
+# Species mapping
+species_map = {
+    0: "setosa",
+    1: "versicolor",
+    2: "virginica"
+}
+
+# Root endpoint
 @app.get("/")
 def read_root():
     return {"message": "ML Prediction API is live!"}
 
-# ✅ Prediction route
+# Prediction endpoint
 @app.post("/predict")
-def predict(features: IrisFeatures):
-    X = np.array([[features.feature1, features.feature2, features.feature3, features.feature4]])
-    prediction = model.predict(X)
-    return {"prediction": int(prediction[0])}
+def predict_species(features: IrisFeatures):
+    input_data = [[
+        features.sepal_length,
+        features.sepal_width,
+        features.petal_length,
+        features.petal_width
+    ]]
+
+    prediction = model.predict(input_data)[0]
+    return {
+        "predicted_class": int(prediction),
+        "predicted_species": species_map.get(int(prediction), "unknown")
+    }
+
+    
+
+
