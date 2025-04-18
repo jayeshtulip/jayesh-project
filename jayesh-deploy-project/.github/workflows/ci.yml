@@ -47,3 +47,4 @@ jobs:
             docker rm fastapi-container || true
             docker run -d -p 8000:8000 --name fastapi-container ${{ secrets.DOCKER_USERNAME }}/fastapi-ml-app:latest
 
+
